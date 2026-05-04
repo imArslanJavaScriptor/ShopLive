@@ -1,15 +1,14 @@
 import { pgTable, text, integer, timestamp, uuid, boolean, jsonb } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
-export type  OrderStatus = "pending"| "paid" | "failed"
-export type UserRole =  "customer"| "support" | "admin"
+export type OrderStatus = "pending" | "paid" | "failed";
+export type UserRole = "customer" | "support" | "admin";
 
 export type CheckoutSessionLine = {
   productId: string;
   quantity: number;
   unitPriceCents: number;
 };
-
 
 export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -19,7 +18,7 @@ export const users = pgTable("users", {
   role: text("role").$type<UserRole>().notNull().default("customer"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-}); 
+});
 
 export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -73,10 +72,8 @@ export const orderItems = pgTable("order_items", {
   unitPriceCents: integer("unit_price_cents").notNull(),
 });
 
-// cascade = “delete children when parent is deleted”;
-// restrict = “don’t delete the parent if any child still points at it.”
+// cascade = “delete children when parent is deleted”; restrict = “don’t delete the parent if any child still points at it.”
 
-// Relations
 // a user can have many orders over time.
 export const usersRelations = relations(users, ({ many }) => ({
   orders: many(orders),
