@@ -16,7 +16,7 @@ const rawJson = express.raw({ type: "application/json", limit: "1mb" });
 
 // it's important that you don't parse the webhook event data, it should be in the raw format
 
-app.post("webhook/clerk", rawJson, (req, res) => {
+app.post("/webhook/clerk", rawJson, (req, res) => {
   void clerkWebhookHandler(req, res)
 })
 
