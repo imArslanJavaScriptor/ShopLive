@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Show, SignInButton, useAuth, UserButton } from "@clerk/react";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "../lib/api";
@@ -10,96 +11,146 @@ import {
   ShoppingBagIcon,
   ShoppingCartIcon,
   StoreIcon,
+  MenuIcon,
+  XIcon,
 } from "lucide-react";
 import { useCart } from "../store/cart";
 
 const Navbar = () => {
   const { getToken, isSignedIn } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
 
   const { data: meData } = useQuery({
     queryKey: ["me"],
     queryFn: () => apiFetch("/api/me", { getToken }),
     enabled: isSignedIn,
   });
-  
-  // console.log(meData)
 
   const role = meData?.user?.role;
 
-  const cartCount = useCart((s) => s.items.reduce((n, line) => n + line.quantity, 0));
+  const cartCount = useCart((s) =>
+    s.items.reduce((n, line) => n + line.quantity, 0)
+  );
 
   return (
     <header className="sticky top-0 z-50 border-b border-base-300 bg-base-100/95 shadow-sm backdrop-blur-md">
       <div className="navbar mx-auto min-h-14 max-w-7xl px-4 py-2.5 md:px-6 md:py-3">
+        
+        {/* LEFT */}
         <div className="flex-1">
           <Link
             to="/"
             className="btn btn-ghost gap-2 px-2 font-mono text-lg font-semibold tracking-wide md:text-xl"
           >
             <span className="flex size-10 items-center justify-center rounded-lg bg-primary/15 p-1 text-primary">
-              <StoreIcon className="size-8" aria-hidden />
+              <StoreIcon className="size-8" />
             </span>
-            <span className="leading-none">ShopLive</span>
+            <span>ShopLive</span>
           </Link>
         </div>
 
-        <nav className="flex items-center gap-1 md:gap-1.5">
+        {/* DESKTOP MENU */}
+        <nav className="hidden md:flex items-center gap-1.5">
           <Link to="/" className="btn btn-ghost gap-2 font-medium">
-            <ShoppingBagIcon className="size-6 opacity-90" aria-hidden />
-            <span className="hidden sm:inline">Shop</span>
+            <ShoppingBagIcon className="size-6" />
+            <span>Shop</span>
           </Link>
 
           <Show when={"signed-in"}>
             <Link to="/orders" className="btn btn-ghost gap-2 font-medium">
-              <PackageIcon className="size-6 opacity-90" aria-hidden />
-              <span className="hidden sm:inline">Orders</span>
+              <PackageIcon className="size-6" />
+              <span>Orders</span>
             </Link>
 
-            {role === "admin" ? (
+            {role === "admin" && (
               <Link to="/admin" className="btn btn-ghost gap-2 font-medium text-secondary">
-                <SettingsIcon className="size-6" aria-hidden />
-                <span className="hidden sm:inline">Admin</span>
+                <SettingsIcon className="size-6" />
+                <span>Admin</span>
               </Link>
-            ) : null}
-          </Show>  
+            )}
+          </Show>
 
           <Link
             to="/cart"
             className="btn btn-ghost gap-2 font-medium indicator"
-            aria-label={cartCount > 0 ? `Cart, ${cartCount} items` : "Cart"}
           >
-            {cartCount > 0 ? (
-              <span className="indicator-item badge badge-sm badge-primary min-w-2 px-1.5 font-sans text-xs tabular-nums">
+            {cartCount > 0 && (
+              <span className="indicator-item badge badge-sm badge-primary">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
-            ) : null}
-            <ShoppingCartIcon className="size-6 opacity-90" aria-hidden />
-            <span className="hidden sm:inline">Cart</span>
+            )}
+            <ShoppingCartIcon className="size-6" />
+            <span>Cart</span>
           </Link>
 
           <Show when={"signed-out"}>
             <SignInButton mode="modal">
-              <button type="button" className="btn btn-primary btn-sm gap-1.5 px-3 shadow-md">
-                <LogInIcon className="size-4 drop-shadow-sm" aria-hidden />
+              <button className="btn btn-primary btn-sm">
+                <LogInIcon className="size-4" />
                 Sign in
               </button>
             </SignInButton>
           </Show>
 
           <Show when={"signed-in"}>
-            <div className="flex items-center gap-2 border-l border-base-300 pl-3">
-              <UserButton
-                appearance={{ elements: { avatarBox: "h-10 w-10 ring-2 ring-base-300" } }}
-              />
-              {role === "support" || role === "admin" ? (
-                <span className="badge badge-primary badge-sm hidden capitalize md:inline-flex">
-                  {role}
-                </span>
-              ) : null}
-            </div>
+            <UserButton />
           </Show>
         </nav>
+
+        {/* MOBILE HAMBURGER */}
+        <div className="md:hidden">
+          <button
+            className="btn btn-ghost"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <XIcon /> : <MenuIcon />}
+          </button>
+        </div>
       </div>
+
+      {/* MOBILE MENU */}
+      {isOpen && (
+        <div className="md:hidden px-4 pb-4 space-y-2 border-t border-base-300">
+          <Link to="/" className="flex items-center gap-2 btn btn-ghost w-full justify-start">
+            <ShoppingBagIcon className="size-5" />
+            Shop
+          </Link>
+
+          <Show when={"signed-in"}>
+            <Link to="/orders" className="flex items-center gap-2 btn btn-ghost w-full justify-start">
+              <PackageIcon className="size-5" />
+              Orders
+            </Link>
+
+            {role === "admin" && (
+              <Link to="/admin" className="flex items-center gap-2 btn btn-ghost w-full justify-start text-secondary">
+                <SettingsIcon className="size-5" />
+                Admin
+              </Link>
+            )}
+          </Show>
+
+          <Link to="/cart" className="flex items-center gap-2 btn btn-ghost w-full justify-start">
+            <ShoppingCartIcon className="size-5" />
+            Cart ({cartCount})
+          </Link>
+
+          <Show when={"signed-out"}>
+            <SignInButton mode="modal">
+              <button className="btn btn-primary w-full">
+                <LogInIcon className="size-4" />
+                Sign in
+              </button>
+            </SignInButton>
+          </Show>
+
+          <Show when={"signed-in"}>
+            <div className="pt-2">
+              <UserButton />
+            </div>
+          </Show>
+        </div>
+      )}
     </header>
   );
 };
