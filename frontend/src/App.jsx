@@ -8,8 +8,8 @@ import {
   ProductDetailPage,
   OrdersPage,
   CheckoutReturnPage,
-  SentryDemoPage,
-  OrderVideoPage,
+  // SentryDemoPage,
+  // OrderVideoPage,
   AdminProductsPage,
   OrderDetailPage,
   OrderSummaryPage,
@@ -32,15 +32,14 @@ function App() {
           element={isSignedIn ? <OrdersPage /> : <Navigate to={"/"} replace />}
         />
         <Route path="/checkout/return" element={<CheckoutReturnPage />} />
+        {/* <Route path="/demo-sentry" element={<SentryDemoPage />} /> */}
 
-        <Route path="/demo-sentry" element={<SentryDemoPage />} />
-
-        <Route
+        {/* <Route
           path="/orders/:id/call"
           element={
             isSignedIn ? <OrderVideoPage /> : <Navigate to={"/"} replace />
           }
-        />
+        /> */}
 
         <Route
           path="/admin"
