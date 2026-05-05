@@ -29,6 +29,8 @@ function ProductDetailPage() {
     ? imageKitWatermarkedUrl(p.imageUrl, IK_PRESETS.productHero)
     : null;
 
+
+    console.log("watermarkedFullUrl", watermarkedFullUrl)
   return (
     <div>
       <nav className="breadcrumbs text-sm text-base-content/60">

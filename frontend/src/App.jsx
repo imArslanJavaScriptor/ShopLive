@@ -8,7 +8,7 @@ import {
   ProductDetailPage,
   OrdersPage,
   CheckoutReturnPage,
-  // SentryDemoPage,
+  SentryDemoPage,
   // OrderVideoPage,
   AdminProductsPage,
   OrderDetailPage,
@@ -32,7 +32,7 @@ function App() {
           element={isSignedIn ? <OrdersPage /> : <Navigate to={"/"} replace />}
         />
         <Route path="/checkout/return" element={<CheckoutReturnPage />} />
-        {/* <Route path="/demo-sentry" element={<SentryDemoPage />} /> */}
+        <Route path="/demo-sentry" element={<SentryDemoPage />} />
 
         {/* <Route
           path="/orders/:id/call"
