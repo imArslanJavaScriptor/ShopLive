@@ -13,7 +13,7 @@ export async function getMe(req: Request, res: Response, next: NextFunction) {
     const user = await getLocalUser(userId);
 
     res.json({ user });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 }

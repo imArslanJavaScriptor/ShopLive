@@ -59,8 +59,8 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
       return;
     }
     next();
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 }
 
@@ -75,8 +75,8 @@ export function getImageKitAuth(_req: Request, res: Response, next: NextFunction
       publicKey: env.IMAGEKIT_PUBLIC_KEY,
       urlEndpoint: env.IMAGEKIT_URL_ENDPOINT,
     });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 }
 
@@ -84,8 +84,8 @@ export async function listAdminProducts(_req: Request, res: Response, next: Next
   try {
     const rows = await db.select().from(products).orderBy(desc(products.createdAt));
     res.json({ products: rows });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 }
 
@@ -107,8 +107,8 @@ export async function createAdminProduct(req: Request, res: Response, next: Next
       })
       .returning();
     res.status(201).json({ product: row });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 }
 
@@ -139,8 +139,8 @@ export async function updateAdminProduct(req: Request, res: Response, next: Next
     }
 
     res.json({ product: row });
-  } catch (e) {
-    next(e);
+  } catch (err) {
+    next(err);
   }
 }
 
